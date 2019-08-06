@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang = "nl">
+
+<head>
+	<title>
+	Resultaten
+	</title>
+
+	<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
+		MathJax.Hub.Config({
+		tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+		})
+	</script>
+
+	<link rel="shortcut icon" href="Logo.png" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+	<body>	
+
+	<h1> Resultaten </h1>
+
+	<header align = "center">
+			<nav>
+				<h3>
+				<ul> 
+					<li> 
+						<a href="index.html" > Home </a>
+					</li>
+	
+					<li>
+						<a href="Intro.html"> Intro </a>
+					</li>
+	
+					<li> 
+						<a href="U-net.html"> U-net </a>
+					</li>
+	
+					<li> 
+						<a href="Resultaten.html" > Resultaten </a>
+					</li>
+	
+				</ul>
+				</h3>
+			</nav>
+		</header>
+
+	<p> Het netwerk dat ik gebouwd heb, is een versie van het klassieke 2D U-net in [<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">1</a>], aangepast aan ons probleem. De implementatie van het originele netwerk uit het artikel is te vinden op <a href="https://github.com/mrkolarik/3D-brain-segmentation" target="_blank">GitHub</a>. De auteurs pasten hun netwerk toe op het identificeren van het hersenvolume. Wij willen het echter gebruiken om hersenen te segmenteren in witte stof, grijze stof en CSF. Daarvoor zijn enkele aanpassingen van het netwerk nodig. Eerst en vooral werd de input laag aangepast zodat het nu 2D slices verwerkt van 256x256 pixels. De output van het originele netwerk is een kans van 0 tot 1 dat een bepaalde pixel behoort tot het hersenvolume. Wij willen echter elke pixel classificeren in grijze stof, witte stof, CSF of achtergrond. We veranderen daarom de output van het netwerk naar een array van 4 getallen voor elke pixel. Deze array geeft respectievelijk de kans dat de pixel achtergrond, grijze stof, witte stof of CSF is. De kansen die we op deze manier bekomen zijn continue waarden tussen 0 en 1. Een voorbeeld van deze continue segmentatie staat hieronder voor slice 80 van volume 1. Rood is grijze stof, groen is witte stof en blauw is CSF. </p>
+
+	<img class="resimg" src="SegmentatieCont.PNG" alt="Kan afbeelding niet laden" title="Continue segmentatie"
+	width="650px">
+
+	<p> Om deze continue waarden om te zetten in een discrete voorspelling voor elke pixel is een <strong>discretisatie algoritme</strong> nodig. Het is niet triviaal om dit algoritme op te stellen. Intuïtief zou je een pixel indelen in de klasse waarvoor de kans maximaal is. Er blijkt echter dat deze naïeve manier leidt tot zwakke resultaten. We zien bijvoorbeeld dat we steeds geel krijgen op de continue segmentatie op de plekken waar SPM witte stof voorspelt. Ons netwerk voorspelt dus dat de pixel een hoge kans heeft om witte stof én grijze stof te zijn. We kunnen dit echter verhelpen door een geschikt discretisatie algoritme te kiezen. Dit algoritme is empirisch opgesteld en ziet eruit als volgt: </p>
+		
+	<p class="list"> 1. Als de kans op achtergrond groter is dan de som van de andere kansen, dan is de pixel background. </p>
+	<p class="list"> 2. Als de pixel een kans heeft groter dan 0.5 om witte materie te zijn en het is geen background, dan is het witte materie. </p>
+	<p class="list"> 3. Als de kans op CSF groter is dan die voor witte materie of grijze materie, en het is geen background, dan is het CSF. </p>
+	<p class="list"> 4. Als geen van bovenstaande waar is, dan is het grijze materie.</p>
+	
+	<p> Deze regels zijn empirisch opgesteld en zo gekozen omdat ze leiden tot goede resultaten. In verder onderzoek kan dit discretisatie algoritme zo gekozen worden dat de dice scores maximaal zijn. Je kan dan te testbeelden gebruiken om te bepalen welk discretisatie algoritme de beste resultaten geeft. Zo wordt optimaal gebruik gemaakt van alle informatie die de continue segmentie geeft. Uiteindelijk werden beelden verkregen zoals op de afbeelding hieronder.</p>
+
+	<img class ="resimg" src="SegmentatieDisc.PNG" alt="Kan afbeelding niet laden" title="Discrete segmentatie"
+	width = "650px">
+
+	<p> Er is te zien dat de discrete segmentatie een plek grijze stof voorspelt op een plek waar SPM enkel achtergrond aangeeft. Op de continue segmentatie is te zien dat hier de kans op grijze stof eerder klein is. Een ander discretitie algoritme met andere criteria voor grijze stof zou ervoor kunnen zorgen dat deze pixels niet als grijze stof gesegmenteerd worden. Dit heeft natuurlijk ook invloed op de segmentatie van andere pixels en kan de segmentatie mogelijk net nog slechter maken. We kunnen besluiten dat het opstellen van een geschikt discretisatie algoritme een niet triviaal probleem is. </p>
+
+	<p> De output van het netwerk is niet het enige wat veranderd is in mijn netwerk. Ook de verliesfunctie is veranderd ten opzichte van de originele implementatie. In het artikel wordt binary cross entropy als verliesfunctie gebruikt, wij gebruiken cross entropy, omdat we willen classificeren in 4 klassen. Het verschil tussen de twee verliesfuncties is dat de eerste geoptimaliseerd is voor een binaire classificatie. Verder werd in de originele implementatie een Adam optimizer gebruikt voor de gradient descent, met een learning rate van $10^{-5}$. In ons model gebruiken we nog steeds een Adam optimizer, maar dan met een learning rate van $10^{-4}$, zo wordt het netwerk sneller getraind. </p>
+
+	<p> Het netwerk werd getraind op 5 beelden gedurende 50 epochs. De training duurde 5u40 op de laptop van Maarten. De resultaten zijn gegeven als html-versie van een jupyter-notebook en vindt u <a href="res.html" target="_blank"> hier</a>. </p>
+
+	<h2> Mogelijke verbeteringen </h2>
+
+	<ul class="verbeteringen">
+		<li class="listel"> De meest voor de hand liggende manier om het netwerk te verbeteren is om het aantal trainings volumes te verhogen. Dit netwerk werd getraind op slechts 5 hersenscans, terwijl er 60 beschikbaar zijn. Verder kan ook onderzocht worden of meer epochs leiden tot betere resultaten.</li>
+
+		<li class="listel"> In dit netwerk treedt ook het probleem van <strong>class imbalance</strong> op. Dit houdt in dat sommige klassen meer voorkomen dan anderen. In dit geal is het CSF dat weinig voorkomt. Voor het netwerk is het gunstig om klassen die weinig voorkomen ook weinig te voorspellen. Als we bijvoorbeeld een afbeelding zouden hebben met 99 zwarte pixels en 1 witte pixel, dan zou een netwerk 99% nauwkeurigheid bereiken door steeds zwart te voorspellen. Dit is echter niet wat we willen. Om dit op te lossen wordt aan elke klasse een gewicht meegegeven op basis van hoe vaak ze voorkomen in de test data. Zo wordt er meer rekening gehouden met klassen die weinig voorkomen. Toegepast op ons probleem zou het de Dice score van CSF kunnen verhogen. </li>
+
+		<li class="listel"> Zoals eerder gezegd werd een <strong>discretisatie algoritme</strong> gebruikt om de continue segmentatie van het neuraal netwerk om te zetten naar voorspelling van de klasse van elke pixel. Nu werd dit algoritme empirisch maar willekeurig gekozen en gaf het reeds goede resultaten. Er is echter zeker nog ruimte om dit algoritme te verbeteren en zo meer informatie uit de continue segmentatie te halen. </li>
+
+		<li class="listel"> Nu werd de <strong> learning rate </strong> arbitrair op $10^{-4}$ gezet. Dit is één van de belangrijkste parameters bij het trainen van een netwerk. Het is daarom uiterst nuttig om te onderzoeken hoe deze learning rate de resultaten beïnvloedt. In vele gevallen is het interessant om te kiezen voor een decay van de learning rate. Deze wordt dan kleiner na elk epoch. Zo neem je kleinere stappen eens je in de buurt van het minimum van verliesfunctie komt. Meer info hierover staat <a href="https://machinelearningmastery.com/learning-rate-for-deep-learning-neural-networks/" target="_blank">hier</a>. </li>
+
+		<li class="listel"> De 3D hersenscans werden nu opgesplitst in slices die één voor één aan het netwerk gegeven worden. Op die manier gaat alle info over de derde dimensie verloren. De beelden worden verwerkt alsof ze onafhandelijke 2D beelden zijn. In elke stap worden willekeurig 16 slices uitgekozen die mogelijk uit verschillende volumes komen. Een manier om 3D informatie te behouden zou kunnen zijn om steeds 16 slices te kiezen die naast elkaar liggen binnen 1 volume. Zo wordt het netwerk in elke stap getraind met 16 slices die niet meer onafhankelijk zijn van elkaar. </li>
+
+		<li class="listel"> Nu werd de data in ruwe vorm ingevoerd in het netwerk. De werking van het netwerk kan verbeterd worden als deze data eerst voorverwerkt wordt. Een veelgebruikte techniek hiervoor is <strong>data augmentation</strong>. Men voegt dan beelden toe die een vervormde versie zijn van de originele data. Dit kan een translatie, rotatie, herschaling of in het algemeen elke affiene transformatie zijn. Op die manier wordt het netwerk getraind om ook hersenen te kunnen segmenteren die gedraaid of verplaatst zijn. Meer informatie over hoe dit te doen in Keras vindt u <a href="https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html" target="_blank"> hier</a>.  </li>
+
+	</ul>
+
+	<h2 id= "Referenties"> Referenties </h2>
+
+	<p> [1] Kolařík, M., Burget, R., Uher, V., Říha, K., & Dutta, M. K. (2019). Optimized High Resolution 3D Dense-U-Net Network for Brain and Spine Segmentation. Applied Sciences, 9(3), vol. 9, no. 3 (<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">link</a>). </p>
+
+	</body>
+    
+</html> 

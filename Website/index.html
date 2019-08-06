@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+    <title>
+        Home page
+    </title>
+        
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} 
+    })
+    </script>
+    <link rel="shortcut icon" href = "Logo.png"/>
+    <link rel="stylesheet" type="text/css" href = "style.css"> 
+        
+</head>
+
+<body>
+    <h1> Convolutioneel neuraal netwerk voor hersensegmentatie </h1>
+
+
+    <header align = "center">
+        <nav>
+            <h3>
+            <ul> 
+                <li> 
+                    <a href="index.html" > Home </a>
+                </li>
+
+                <li>
+                    <a href="Intro.html"> Intro </a>
+                </li>
+
+                <li> 
+                    <a href="U-net.html"> U-net </a>
+                </li>
+
+                <li> 
+                    <a href="Resultaten.html" > Resultaten </a>
+                </li>
+
+            </ul>
+            </h3>
+        </nav>
+    </header>
+
+    <h2> Inleiding </h2>
+
+    <p>Deze website beschrijft hoe een neuraal netwerk gebruikt kan worden om hersenen te segmenteren. Het doel is om 3D T1-beelden te segmenteren in grijze stof, witte stof en CSF. Momenteel gebeurt deze segmentatie in het UZ Jette op basis het software programma SPM dat werkt met atlassen van de drie hersenweefsels. Een gebruikelijke manier om de kwaliteit van deze segmentaties te beoordelen is de Dice coëfficient. We noemen A de verzameling van de pixels die gesegmenteerd zijn in een bepaalde klasse en B de verzameling van de pixels die daadwerkelijk in deze klasse zitten. Dan is de Dice score gedefinieerd als </p>
+
+    <h3> $$ Dice = \frac{2 \cdot |A \cap B|}{ |A| + |B| }. $$ </h3>
+
+    <p> Deze score ligt steeds tussen 0 en 1, een hoge score duidt op een goede segmentatie. Voor het programma SPM worden Dice scores bereikt van ongeveer 0.80 volgens een studie uit 2014 [<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4258855/" target="_blank">1</a>]. </p>
+    
+    <p> De meest nauwkeurige segmentaties worden vandaag manueel bereikt door een radioloog. Dit proces is echter zeer tijdrovend, zeker voor 3D beelden. Een bijkomend probleem is dat ook deze segmentatie niet perfect is. Als twee radiologen dezelfde beelden segmenteren kunnen deze significant verschillen. Zelfs wanneer men de segmentaties vergelijkt die gemaakt zijn door dezelfde radioloog op verschillende tijdstippen, merkt men dat ze kunnen verschillen.  
+
+    <h2> Artificiële intelligentie </h2>
+
+    <p> De laatste jaren komt artificiële intelligentie steeds meer onder de aandacht. Met name een subdomein van dit veld genaamd deep learning komt vaak onder de aandacht in onderzoek, de bedrijfswereld of de algemene media. Deep learning is een verzameling van machine learning algoritmes die gebruikt kunnen worden voor onder meer spraak herkenning (<a href="https://medium.com/@ageitgey/machine-learning-is-fun-part-6-how-to-do-speech-recognition-with-deep-learning-28293c162f7a" target="_blank">link</a>), het genereren van schilderijen (<a href="https://www.boredpanda.com/computer-deep-learning-algorithm-painting-masters/?utm_source=ecosia&utm_medium=referral&utm_campaign=organicen" target="_blank">link</a>) of het herkennen van katten en honden op foto's (<a href="http://www.subsubroutine.com/sub-subroutine/2016/9/30/cats-and-dogs-and-convolutional-neural-networks" target="_blank">link</a>). Een van deze algoritmes kan worden toegepast op het probleem van hersensegmentatie, met name het convolutioneel netwerk. 
+        
+    Deze techniek haalt betere resultaten dan andere machine learning technieken of software pakketten zoals SPM voor segmentatie. Onderstaande tabel uit [<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">2</a>] toont de Dice score voor enkele convolutionele netwerken. Met dit soort netwerken wordt een Dice score bereikt die zelfs hoger ligt dat die voor manuele segmentatie. In de tabel staan ook andere metrieken om de goedheid van de segmentatie te bepalen, maar daar gaan we verder niet op in. </p>
+
+    <img class="resimg" src = "3D U-net resultaten.png" alt="Kan afbeelding niet weergeven" width = "900px" title="3D Unet resultaten" />
+
+    <p> Een ander voordeel van convolutionele netwerken is dat het een oplossing biedt voor het <strong>Partial Volume Effect (PVE)</strong>. Dit effect is een gevolg van de eindige grootte van de voxels in een hersenscan. Als een voxel op de rand ligt tussen witte en grijze stof, dan kan deze beide weefsels bevatten. Een segmentatie zal deze voxel echter in een enkele klasse willen indelen en zo een fout moeten maken. Een oplossing voor dit probleem is <strong>fuzzy clustering</strong>. Dit is een machine learning techniek waarbij een voxel niet toegewezen wordt tot een welbepaalde klasse, maar tot verschillende klassen met een bepaalde waarschijnlijkheid. Zo zal een voxel bijvoorbeeld witte stof zijn met een kans van 70% en grijze stof zijn met een kans van 10%. Merk op dat deze kansen niet optellen tot 100% omdat voor elke klasse de waarschijnlijkheid dat een pixel tot deze klasse behoort onafhankelijk van de andere klassen gebeurt. Een convolutioneel netwerk geeft dezelfde output als in de techniek van fuzzy clustering. Zo vormen convolutionele netwerken een oplossing voor het Partial Volume Effect (PVE). </p>
+
+    <h2> Mijn bijdrage </h2>
+
+    <p> Dit project heb ik gedaan als Externe Mobiliteit B, opleidingsonderdeel van de master Fysica en Sterrenkunde aan de VUB. Hiervoor heb ik 4 weken meegewerkt in de onderzoeksgroep van de afdeling MRI aan het UZ Jette. Het project onderzocht hoe convolutionele netwerken kunnen worden ingezet voor de segmentatie van MRI beelden van de hersenen. Het project begon met een literatuurstudie over convolutionele netwerken en hoe ze toegepast worden op segmentatie van de hersenen. Vervolgens heb ik gewerkt met enkele MRI hersenscans ter beschikking gesteld door het UZ Jette. Deze scans heb ik dan gesegmenteerd met het software pakket SPM12. Deze segmentaties werden gebruikt als "ground truth" om het netwerk te trainen. Vervolgens trainde ik een netwerk geïnspireerd door het artikel in [<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">2</a>]. Dit netwerk is in staat om nieuwe hersenscans te segmenteren en behaalt een Dice score van 0.83. Op deze website bespreek ik hoe dit netwerk gemaakt is en hoe men het zou kunnen verbeteren. </p>
+
+    <h2> Overzicht website </h2>
+
+    <p> In de tab Intro van deze website vindt u een korte introductie tot convolutionele netwerken en hoe ze gebruikt kunnen worden voor segmentatie problemen. In de tab U-net vindt u meer uitleg over het netwerk waarop ik me gebaseerd heb. U-net is de naam van een convolutioneel netwerk dat zeer populair is in de medische beeldanalyse. Tot slot vindt u de resultaten en implementatie van mijn netwerk in de tab Resultaten. </p>
+
+    <h2 id= "Referenties"> Referenties </h2>
+
+    <p> [1] K. Kazemi, N. Noorizadeh.
+     J Biomed Phys Eng. (2014) Mar; 4(1): 13–26. Published online 2014 Mar 8 (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4258855/" target="_blank">link</a>). </p>
+                
+     <p> [2] Kolařík, M., Burget, R., Uher, V., Říha, K., & Dutta, M. K. (2019). Optimized High Resolution 3D Dense-U-Net Network for Brain and Spine Segmentation. Applied Sciences, 9(3), vol. 9, no. 3 (<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">link</a>). </p>
+                
+</body>
+
+</html>

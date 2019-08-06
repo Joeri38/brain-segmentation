@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="nl">
+
+<head>
+	<title>
+	U-net
+	</title>
+	<link rel="stylesheet" type="text/css"
+	href="style.css" />
+	<link rel="shortcut icon" href = "Logo.png"/>
+</head>
+
+<body>
+<h1> Beschrijving U-net architectuur </h1>	
+
+<header align = "center">
+	<nav>
+		<h3>
+		<ul> 
+			<li> 
+				<a href="index.html" > Home </a>
+			</li>
+
+			<li>
+				<a href="Intro.html"> Intro </a>
+			</li>
+
+			<li> 
+				<a href="U-net.html"> U-net </a>
+			</li>
+
+			<li> 
+				<a href="Resultaten.html" > Resultaten </a>
+			</li>
+
+		</ul>
+		</h3>
+	</nav>
+</header>
+
+<h2> Wat is U-net? </h2>
+
+<p> U-net is een <strong>Fully Convolutional Network (FCN)</strong> dat gebruikt kan worden voor semantische segmentatie. Dit netwerk bevat geen fully connected lagen, maar enkel convolutionele. In het algemeen heeft een FCN veel trainingsdata nodig. Daarom is het niet ideaal voor medische beeldanalyse, waar men slechts een beperkt aantal gesegmenteerde beelden heeft. U-net bracht hier verandering in. Dit Fully Convolutional Netwerk (FCN) heeft slechts een beperkt aantal trainingsbeelden nodig om goede resultaten te bekomen. Dit netwerk werd zeer populair in de medische wereld. </p>
+
+<h2> Insert net iets meer uitleg over U-net.</h2>
+
+<p> De geïnteresseerde lezer verwijzen we door naar de originele paper van Olaf Ronneberger, Philipp Fischer en Thomas Brox (2015) [<a href="https://arxiv.org/pdf/1505.04597.pdf" target="_blank">1</a>]. </p>
+
+<img src="U-net.PNG" alt="Afbeelding kan niet worden geladen" title="U-net architectuur" width = "700px" />
+
+<h2> Mijn inspiratie</h2>
+
+<p> Het netwerk dat ik gebouwd hebt, is gebaseerd op een artikel van M. Kolarik et al. uit januari 2019 [<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">2</a>]. De code horende bij dit artikel is the vinden op <a href="https://github.com/mrkolarik/3D-brain-segmentation" target = "_blank"> GitHub</a>. In hun artikel combineerden de auteurs twee uitbreidingen op het originele U-net in [<a href="https://arxiv.org/pdf/1505.04597.pdf" target="_blank">1</a>]. Ze bekeken of een eerder voorgesteld 3D U-net verbeterd kon worden door extra verbindingen tussen de lagen. Er werden twee netwerken voorgesteld, Res 3D U-net en Dense 3D U-net. Deze netwerken werden dan vergeleken met het originele 3D U-net. Er werd ook telkens een 2D versie geïmplementeerd om ook hiermee te vergelijken. De netwerken werden toegepast voor de extractie van het hersenvolume op 3D hersenscans. Het doel is om voor elke voxel te bepalen of deze al dan niet behoort tot het hersenvolume. De data bestaat uit 21 3D hersenscans waarop getraind werd en 1 3D hersenscan waarop getest werd. De hersenscans bevatten 257x400x400 voxels. Omwille van beperkt RAM geheugen werden de 3D netwerken niet getraind op de volledige 3D hersenscan, maar op 16 opeenvolgende 2D slices. Uiteindelijk werd in elke training stap wel het hele hersenvolume doorlopen. De resultaten voor de verschillende netwerken staat in de onderstaande figuur. </p>
+
+<img src = "3D U-net resultaten.png" alt="Kan afbeelding niet weergeven" width = "900px" title="3D Unet resultaten" />
+
+<p> De resultaten van het netwerk werden ook vergeleken met die van een manuele segmentatie door een radioloog. Als ground truth voor dit experiment gebruikte men een segmentatie die met uitzonderlijke zorg en extra aandacht door een radioloog werd gemaakt. De data werd vervolgens gesegmenteerd door een andere radioloog die segmenteerde zoals in de dagelijkse praktijk gebeurt. Deze twee segmentaties werden dan vergeleken om tot een Dice score te komen. </p>
+
+<p> Onder deze netwerkaan haalt het Dense 3D U-net de beste resultaten. Bovendien behalen alle de netwerken een betere Dice score dan de manuele segmentatie zoals die in de dagelijkse praktijk gebeurt. </p>
+
+<h2> Mijn implementatie </h2>
+
+<p> In mijn onderzoek heb ik gewerkt met het klassieke 2D U-net zoals het geïmplementeerd werd in bovengenoemd artikel. Het 3D U-net kon ik niet implementeren omwille van het beperkte RAM geheugen op mijn laptop. Deze heeft een RAM-geheugen van 8GB, waarvan ongeveer 4-5 GB beschikbaar voor Python. Uit de resultaten voor alle netwerken blijkt echter dat ook het U-net in 2D zeer goede resultaten bereikt. Het klassieke 2D U-net bereikt namelijk een Dice score van 0.98574 op de dataset in het artikel. </p>
+
+<p> De data die ik gebruikt heb zijn 74 T1-gewogen 3D hersenscans die gesegmenteerd zijn met SPM12. Hiervan zijn 60 scans gebruikt voor training en 14 scans zijn gebruikt om het netwerk te testen. De hersenvolumes worden aan het netwerk gegeven als 2D sagittale sneden. Bij het trainen wordt in elke stap een reeks van 16 sneden gebruikt. Deze sneden worden willekeurig gekozen over alle hersenscans waarop het netwerk traint. Een mogelijke verbetering van het netwerk zou kunnen zijn om steeds opeenvolgende slices in eenzelfde hersenscan te kiezen. Zo zou het netwerk ook contextuele info in 3 dimensies kunnen leren. Dit idee heb ik echter niet getest. </p>
+
+<h2> Alternatieven</h2>
+
+<p> In dit project heb ik enkel gewerkt rond de U-net architectuur. Er bestaan echter nog verschillende andere netwerken die gebruikt kunnen worden voor segmentatie van hersenbeelden. Hieronder enkele voorbeelden. </p>
+
+<ul class="verbeteringen">
+<li class="listel"> De iSeg2017 challenge had als doel om hersenbeelden van 6 maand oude neonaten te segmenteren in grijze stof, witte stof en CSF. Verschillende onderzoeksgroepen dienden hun netwerk in en schreven er ook een korte paper over. Dit geeft een goed idee van de state-of-the-art voor hersensegmentatie (<a href="http://iseg2017.web.unc.edu/files/2019/02/Benchmark-on-Automatic-6-month-old-Infant-Brain-Segmentation-Algorithms.pdf" target="_blank" >link</a>). </li>
+
+<li class="listel"> VoxResNet is een 3D netwerk met multimodale input. Het netwerk geeft een Dice score van 0.87 voor grijze stof, 0.90 voor witte stof en 0.82 voor CSF (<a href="https://arxiv.org/pdf/1608.05895.pdf" target="_blank">link</a>). Implementatie van dit netwerk is terug te vinden op <a href="https://github.com/search?q=VoxResNet" target="_blank">GitHub</a> </li>
+
+<li class="listel"> 3DQ Net is een netwerk gebaseerd op 3D U-Net. Het interessante aan dit netwerk is dat het probeert de data die in het netwerk zit, in de vorm van de te trainen parameters, te verminderen. Zo heeft het netwerk minder geheugen nodig om te trainen en om opgeslagen te worden (<a href="http://arxiv-export-lb.library.cornell.edu/pdf/1904.03110" target="_blank">link</a>). </li>
+
+<li class="listel"> DenseNet encoder is een netwerk dat een voorgetraind DenseNet netwerk gebruikt. Op die manier wordt het netwerk niet vanaf nul getraind, maar gaat het verder op een netwerk dat getraind is op een andere dataset zoals ImageNet. Deze techniek noemt met <strong>transfer learning</strong> (<a href="https://arxiv.org/pdf/1811.07542.pdf" target="_blank">link</a>). </li>
+
+<li class="listel"> Memory-efficient Densenet is tot slot zoals de naam zegt een Densenet dat minder geheugen nodig heeft (<a href="https://arxiv.org/pdf/1707.06990.pdf" target = "_blank">link</a>).</li>
+
+</ul>
+
+<h2 id= "Referenties"> Referenties </h2>
+
+<p> [1] Ronneberger O., Fischer P., Brox T. (2015). U-Net: Convolutional Networks for Biomedical Image Segmentation, <a href="https://arxiv.org/abs/1505.04597" target="_blank">arXiv:1505.04597</a>. </p>
+
+<p> [2] Kolařík, M., Burget, R., Uher, V., Říha, K., & Dutta, M. K. (2019). Optimized High Resolution 3D Dense-U-Net Network for Brain and Spine Segmentation. Applied Sciences, 9(3), vol. 9, no. 3 (<a href="https://www.mdpi.com/2076-3417/9/3/404/htm" target="_blank">link</a>). </p>
+
+</body>
+
+</html>

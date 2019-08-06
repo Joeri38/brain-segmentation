@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+
+<html lang="nl">
+
+	<head>
+		<title>
+		Intro CNN
+		</title>
+		<link rel="shortcut icon" href = "Logo.png"/>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+
+	<body>
+
+	<!-- Dit is een comment -->
+
+	<h1> Wat is een convolutioneel netwerk? </h1>
+
+	<header align = "center">
+		<nav>
+			<h3>
+			<ul> 
+				<li> 
+					<a href="index.html" > Home </a>
+				</li>
+
+				<li>
+					<a href="Intro.html"> Intro </a>
+				</li>
+
+				<li> 
+					<a href="U-net.html"> U-net </a>
+				</li>
+
+				<li> 
+					<a href="Resultaten.html" > Resultaten </a>
+				</li>
+
+			</ul>
+			</h3>
+		</nav>
+	</header>
+	
+	<h2>To do</h2>
+	<p> Leuk <a href="https://medium.com/nanonets/how-to-do-image-segmentation-using-deep-learning-c673cc5862ef" target="_blank"> Medium<a> artikel. wat is semantische segmentatie?</p> 
+
+	<hr />
+
+	<h2>AlexNet (2012)</h2>
+	<p> Dit netwerk heeft de hype rond convolutionele netwerken gestart. In de competitie op de ImageNet dataset won het overtuigend met een top-5 fout van 15.3 %,  10% minder dan de tweede plaats. In deze dataset is het doel om een afbeelding te classificeren in een van 1000 klassen. Het netwerk bevat 5 convolutionele lagen en 3 fully connected lagen. De originele paper is <a href="https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf" target="_blank"> hier</a>. </p>
+
+	<img src="AlexNet.PNG" alt="Afbeelding kan niet worden geladen" title="AlexNet architectuur" width="700px"/>
+
+	<h2>ZFnet (2013)</h2>
+	<p>Dit netwerk is gemaakt door Matt Zeiler en Rob Fergus verbonden aan NYU. Het netwerk is gebaseerd op AlexNet. In hun paper introduceren ze het concept van een <strong> deconvNet </strong>. Dit geeft voor elke laag van het netwerk de features weer waarop het getraind is. Deze paper geeft een manier om een CNN te analyseren en zo ook te verbeteren. Link naar hun artikel op ArXiv is <a href="https://arxiv.org/pdf/1311.2901v3.pdf" target="_blank"> hier </a>. </p>
+
+	<img src="ZFnet.PNG" alt="Afbeelding kan niet worden geladen" title="ZFnet architectuur" width="700px"/>
+
+	<h2>VGG Net (2014) </h2>
+	<p>Dit netwerk gebruikt een kleine 3x3 filter, maar dan met 2 convolutionele lagen. Dit in tegenstelling tot AlexNet met een 11x11 filter of ZFnet met een 7x7 filter. Door de kleinere filters kan het netwerk meer lagen bevatten en dus veel dieper worden. Verschillende variaties zijn voorgesteld, met 11 tot 19 convolutionele lagen. Deze worden gevolgd door 3 fully connected lagen. Het netwerk betere resultaten dan AlexNet of ZFnet. De geïnteresseerde lezer vindt de originele paper <a href"https://arxiv.org/pdf/1409.1556.pdf" target="_blank"> hier</a>. </p>
+
+	<img src="VGGnet.PNG" alt="Afbeelding kan niet worden geladen" title="VGG net architectuur" width="500px"/>
+
+	<h2>GoogLeNet (2014) </h2>
+	<p>Dit netwerk introduceerde een <strong> inception module </strong>. In plaats van de lagen in serie te zetten, komen er parallele lagen. Zo kan het netwerk nog dieper worden, het netwerk bevat 22 lagen. Er is bovendien maar 1 fully connected laag in plaats van 3. Dit zorgt ervoor dat het netwerk 12 keer minder parameters heeft dan AlexNet en veel sneller getraind kan worden. De originele paper is te vinden op de <a href="https://arxiv.org/pdf/1409.4842.pdf" target="_blank"> ArXiv</a>. </p> 
+
+	<img src="GoogLeNet.PNG" alt="Afbeelding kan niet worden geladen" title="GoogleNet architectuur" width="1000px"/>
+
+	<h2>Microsoft ResNet (2015) </h2>
+	<p>Dit netwerk is opmerkelijk diep en heeft 152 lagen. Op de ImageNet data behaalde het een foutenpercentage van 3.6 %, dit is minder dan het foutenpercentage van 5 % dat mensen behalen. Als men de lagen naïef opstapelt, dan leidt dit tot overfitting en een toename van het te trainen parameters. Om dit tegen te gaan kwam men met het concept van een <strong> residual block </strong>. In zo'n blok is de output de som van de output van de convolutionele lagen en de input. De verbinding tussen input en output zorgt ervoor dat de gradiënt zich sneller kan terugpropageren door het netwerk. De originele paper vindt u <a href="https://arxiv.org/pdf/1512.03385.pdf" target="_blank"> hier</a>. </p>
+
+	<img src="residualBlock.PNG" alt="Afbeelding kan niet worden geladen" title="VGG net architectuur" width="400px"/>
+	
+	<h2> Resultaten op ImageNet </h2>
+
+		<center>
+	<table border="1" align = "center">
+		<tr>
+			<th> Netwerk </th>
+			<th> Top-5 fout </th>
+		</tr>
+		<tr>
+			<td> AlexNet </td>
+			<td> 15.3 % </td>
+		</tr>
+		<tr>
+			<td> ZFnet </td>
+			<td> 14.7 % </td>
+		</tr>
+		<tr>
+			<td> VGG net </td>
+			<td> 7.3 % </td>
+		</tr>
+		<tr>
+			<td> GoogLeNet </td>
+			<td> 6.7 % </td>
+		</tr>
+		<tr>
+			<td> ResNet </td>
+			<td> 3.6 % </td>
+		</tr>
+	</table>
+		</center>
+	
+	</body>
+
+</html>

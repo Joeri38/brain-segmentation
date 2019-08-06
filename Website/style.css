@@ -1,0 +1,81 @@
+* {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    background-color: #ccc; 
+}
+
+h1 {
+    font-size: 50px;
+    font-family: sans-serif;
+}
+
+h2 {
+    margin: 30px;
+}
+
+h3 {
+    margin-top : 30px;
+    margin-bottom: 20px;
+}
+
+header nav ul li {
+    display : inline-block;
+    margin: 0px; 
+    margin-bottom: 10px;
+}
+
+header nav ul li a{
+    color: #fff;
+    background-color: #333;
+    text-decoration: none;
+    padding : 8px;
+    margin : 0px;
+    
+    border: 4px solid rgb(11, 11, 184);
+    border-radius: 20px; 
+}
+
+header nav ul li a:hover {
+    background-color: #565656;
+}
+
+p {
+    padding-left : 340px;
+    padding-right : 340px; 
+    text-align: justify;
+}
+
+.verbeteringen {
+    padding-left : 370px;
+    padding-right : 370px; 
+    text-align: justify;
+}
+
+.listel {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.list {
+    padding-left : 370px;
+    padding-right: 370px;
+}
+
+.resimg {
+    margin-top: 20px;
+}
+
+#referenties {
+    margin-top: 0px;
+}
+
+img {
+    margin-top: 40px;
+}
+
+table {
+    text-align: center;
+}
+
+
+
