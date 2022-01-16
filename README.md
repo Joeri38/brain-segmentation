@@ -6,4 +6,4 @@ https://joeri38.github.io/brain-segmentation-website/
 
 The data consists of 60 3D images of brain MRI scans as a training set and 14 MRI scans as a test set. The images are accompanied by ground truth, consisting of the segmentation into white matter, grey matter and cerebrospinal fluid (CSF). The data is stored as numpy arrays. In the map 'anatomischeScans', the data is also available as NifTi .nii files. 
 
-![Brain segmentation](https://github.com/Joeri38/brain-segmentation/blob/master/brain_segmentation_results.fig)
+![Brain segmentation](https://github.com/Joeri38/brain-segmentation/blob/master/brain_segmentation_result.png)
